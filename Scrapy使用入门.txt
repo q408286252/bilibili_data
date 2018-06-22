@@ -1,0 +1,44 @@
+scrapy.cfg 为配置文件不用管
+项目名文件夹下(目前是crawl_data):
+	items.py:以字段形式定义后期需要处理的数据
+	middlewares.py:??
+	pipelines.py:取出来的ltem对象返回的数据并进行存储
+	settings.py:项目的设置文件.可以对爬虫进行自定义设置,
+		比如选择深度优先爬取还是广度优先爬取,
+		设置对每个ip的爬虫数,设置每个域名的爬虫数,设置爬虫延时,设置代理等等
+	spiders:这是目录是存放爬虫程序代码
+	
+	
+
+工作顺序
+1.响应 当引擎（ 发动机 ）收到 蜘蛛 发送过来的网址主入口地址（其实是一个 请求 对象，因为Scrapy内部是用到请求请求库），发动机会进行初始化操作。
+2.引擎 请求调度器（调度器），让调度调度出下一个网址给引擎。
+3.调度返回下一个网址给引擎。
+4.发动机将URL通过下载中间件（请求（请求）方向）转发给下载器（下载）。
+5.一旦页面下载完毕，下载器生成一个该页面的响应，并将其通过下载中间件（返回（响应）方向）发送给发动机
+6.引擎将从下载器中接收到响应发送给蜘蛛处理。
+7.蜘蛛处理响应并返回爬取到的项目和新的请求给引擎。
+8.引擎将蜘蛛返回的爬取到的项目转发给项目管道，顺便也将将请求给调度器。
+ 重复（第2步）直到调度器中没有更多地请求时，引擎关闭该网站。
+ 图片地址https://pic1.zhimg.com/v2-63bca07ae785acc31ade355ae35b852e_r.jpg
+ 
+
+跑程序命令scrapy crawl dmoz -o items.json
+	该命令将采用 JSON 格式对爬取的数据进行序列化，生成 items.json 文件。
+ 
+.xpath() 这里给出XPath表达式的例子及对应的含义:
+	/html/head/title: 选择HTML文档中 <head> 标签内的 <title> 元素
+	/html/head/title/text(): 选择上面提到的 <title> 元素的文字
+	//td: 选择所有的 <td> 元素
+	//div[@class="mine"]: 选择所有具有 class="mine" 属性的 div 元素	
+
+	xpath(): 传入xpath表达式，返回该表达式所对应的所有节点的selector list列表 。
+	css(): 传入CSS表达式，返回该表达式所对应的所有节点的selector list列表.
+	extract(): 序列化该节点为unicode字符串并返回list。
+	re(): 根据传入的正则表达式对数据进行提取，返回unicode字符串list列表。
+
+快速抓整个网页到变量:
+	scrapy shell "https://space.bilibili.com/1/#/"
+	scrapy shell "http://m.ahzikao.org/kaoshianpai/2017/1121/9869.html"
+	网站内容输到了response 变量里 
+	利用response.xpath('//title')快速查看标题  有些防爬的网站就没有标题
