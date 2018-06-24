@@ -23,22 +23,50 @@ scrapy.cfg 为配置文件不用管
  图片地址https://pic1.zhimg.com/v2-63bca07ae785acc31ade355ae35b852e_r.jpg
  
 
-跑程序命令scrapy crawl dmoz -o items.json
+跑程序命令 
+	scrapy crawl 蜘蛛名字 -o items.json
 	该命令将采用 JSON 格式对爬取的数据进行序列化，生成 items.json 文件。
- 
-.xpath() 这里给出XPath表达式的例子及对应的含义:
+
+长时间爬虫
+	scrapy crawl 蜘蛛名字 -s JOBDIR=crawls/somespider-1
+	ctrl+c 暂停 输入上面命令继续
+	
+.xpath() 这里给出XPath表达式的例子及对应的含义:以及方法
 	/html/head/title: 选择HTML文档中 <head> 标签内的 <title> 元素
 	/html/head/title/text(): 选择上面提到的 <title> 元素的文字
 	//td: 选择所有的 <td> 元素
 	//div[@class="mine"]: 选择所有具有 class="mine" 属性的 div 元素	
+	#两个条件并 .xpath("//li[contains(@id,'ma') and contains(@id,'in')]")  匹配的是/li id的内容包含ma和in
+    #两个条件都行//li[@class="item odd clearit" or @class="item even clearit"]   连个class都匹配
+    #starts-with匹配开头   //li[starts-with(@class,"item")]  匹配的是class="item???????"的内容"
+    #contains 匹配包含的字符串  //input[contains(@name,'na')]         匹配查找name属性中包含na关键字的页面元素
+    #text（）  匹配的是显示文本信息  //a[text()='百度搜索']  或者 //a[contains(text(),"百度搜索")]    匹配<a href="http://www.baidu.com">百度搜索</a>
 
 	xpath(): 传入xpath表达式，返回该表达式所对应的所有节点的selector list列表 。
 	css(): 传入CSS表达式，返回该表达式所对应的所有节点的selector list列表.
 	extract(): 序列化该节点为unicode字符串并返回list。
 	re(): 根据传入的正则表达式对数据进行提取，返回unicode字符串list列表。
 
-快速抓整个网页到变量:
-	scrapy shell "https://space.bilibili.com/1/#/"
-	scrapy shell "http://m.ahzikao.org/kaoshianpai/2017/1121/9869.html"
+快速抓取网页输出到终端:
+	scrapy fetch https://space.bilibili.com/26898/#/
+	
+快速抓取整个网页保存本地在显示到浏览器:
+	view
+	语法: scrapy view <url>
+	是否需要项目: no
+	在浏览器中打开给定的URL，并以Scrapy spider获取到的形式展现。 有些时候spider获取到的页面和普通用户看到的并不相同。 因此该命令可以用来检查spider所获取到的页面，并确认这是您所期望的。
+	例子:
+	$ scrapy view http://m.ahzikao.org/kaoshianpai/2017/1121/9869.html
+	[ ... browser starts ... ]
+		
+	
+快速抓整个网页到变量启动终端:
+	scrapy shell https://space.bilibili.com/1/#/
+	scrapy shell http://m.ahzikao.org/kaoshianpai/2017/1121/9869.html
 	网站内容输到了response 变量里 
 	利用response.xpath('//title')快速查看标题  有些防爬的网站就没有标题
+	
+	
+	
+	
+爬虫爬取的资讯一般在f12 的 Network 下 Doc 刷新 选择一个Name 然后选 Response 里面所有的内容就是爬虫爬到的内容
